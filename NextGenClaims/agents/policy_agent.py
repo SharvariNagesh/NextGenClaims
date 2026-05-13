@@ -16,7 +16,7 @@ def fetch_policy_document(state: dict) -> str:
 
 
     response = s3.get_object(
-        Bucket="kendra-it-helpdesk-docs-development",
+        Bucket="extgenclaims-semicolons-2026",
         Key=policy_pdf
     )
 

@@ -31,13 +31,13 @@ st.markdown("""
 <style>
     /* ── Global ── */
     html, body, [class*="css"] {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Arial', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         font-size: 16px;
     }
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
     .stDeployButton { display: none !important; }
-    .stApp { background: #F5F5F5; }
+    .stApp { background: #EEEEEE; }
     /* ── Hide sidebar and toggle button completely ── */
     section[data-testid="stSidebar"] { display: none !important; }
     button[data-testid="collapsedControl"] { display: none !important; }
@@ -45,86 +45,94 @@ st.markdown("""
 
     /* ── Header Banner ── */
     .header-banner {
-        background: #B22020; color: white; padding: 22px 36px;
+        background: #231E28; color: white; padding: 22px 36px;
         border-radius: 0; margin-bottom: 18px;
         display: flex; align-items: center; gap: 18px;
-        border-bottom: 4px solid #8B0000;
+        border-bottom: 4px solid #FD5F07;
     }
     .header-banner .icon { font-size: 2.6rem; line-height: 1; }
     .header-banner h1 {
         margin: 0 0 3px 0; font-size: 1.7rem; font-weight: 700;
         letter-spacing: 0.5px; color: #FFFFFF !important; text-transform: uppercase;
     }
-    .header-banner p { margin: 0; font-size: 0.90rem; color: #FFCCCC; }
+    /* Subtitle uses secondary teal tint — visible against Midnight, on-brand */
+    .header-banner p { margin: 0; font-size: 0.90rem; color: #6BBFBC; }
 
     /* ── Tabs ── */
     .stTabs [data-baseweb="tab-list"] {
         gap: 0; background: #FFFFFF; border-radius: 0; padding: 0;
-        border-bottom: 2px solid #B22020;
+        border-bottom: 2px solid #231E28;
     }
     .stTabs [data-baseweb="tab"] {
         border-radius: 0; font-weight: 700; font-size: 0.88rem;
-        padding: 12px 26px; color: #1a1a1a; background: #FFFFFF;
+        padding: 12px 26px; color: #4D4D4D; background: #FFFFFF;
         text-transform: uppercase; letter-spacing: 0.6px;
         border-right: 1px solid #EEEEEE;
     }
-    .stTabs [data-baseweb="tab"]:hover { background: #F5F5F5 !important; color: #B22020 !important; }
+    /* Hover uses teal — distinct from the orange primary actions */
+    .stTabs [data-baseweb="tab"]:hover { background: #E8F7F9 !important; color: #00ADC6 !important; }
     .stTabs [aria-selected="true"] {
-        background: #B22020 !important; color: #FFFFFF !important; border-bottom: none !important;
+        background: #231E28 !important; color: #FFFFFF !important; border-bottom: none !important;
     }
 
-    /* ── Step label (small red uppercase) ── */
+    /* ── Step label (small teal uppercase — secondary accent) ── */
     .step-label {
         font-size: 0.78rem; font-weight: 800; letter-spacing: 1.8px;
-        text-transform: uppercase; color: #B22020; margin: 20px 0 4px 0;
+        text-transform: uppercase; color: #00ADC6; margin: 20px 0 4px 0;
         display: block;
     }
 
-    /* ── Step title (bold black heading) ── */
+    /* ── Step title (bold Midnight heading) ── */
     .step-title {
-        font-size: 1.25rem; font-weight: 700; color: #1a1a1a;
+        font-size: 1.25rem; font-weight: 700; color: #231E28;
         margin: 0 0 10px 0; display: block;
     }
 
     /* ── Step description text ── */
     .step-desc {
-        font-size: 1.0rem; color: #444444; margin: 0 0 16px 0;
+        font-size: 1.0rem; color: #4D4D4D; margin: 0 0 16px 0;
         line-height: 1.6; display: block;
     }
 
-    /* ── Step divider ── */
+    /* ── Step divider — teal label pill ── */
     .step-divider {
         display: flex; align-items: center; margin: 28px 0 20px 0;
     }
-    .step-divider-line { flex: 1; height: 1px; background: #DDDDDD; }
+    .step-divider-line { flex: 1; height: 1px; background: #8ACBD8; }
     .step-divider-label {
-        margin: 0 14px; font-size: 0.78rem; font-weight: 800; color: #B22020;
+        margin: 0 14px; font-size: 0.78rem; font-weight: 800; color: #00ADC6;
         text-transform: uppercase; letter-spacing: 1.5px; padding: 5px 14px;
-        border: 1.5px solid #B22020; border-radius: 4px; background: #FFF;
+        border: 1.5px solid #00ADC6; border-radius: 4px; background: #E8F7F9;
     }
 
-    /* ── Action card (white box around each step action) ── */
+    /* ── Action card — teal left accent for informational/next-step cards ── */
     .action-card {
-        background: white; border: 1px solid #DDDDDD; border-left: 4px solid #B22020;
+        background: white; border: 1px solid #8ACBD8; border-left: 4px solid #00ADC6;
         border-radius: 4px; padding: 20px 24px; margin-bottom: 16px;
     }
     .action-card-title {
-        font-weight: 700; font-size: 1.05rem; color: #1a1a1a; margin-bottom: 6px;
+        font-weight: 700; font-size: 1.05rem; color: #231E28; margin-bottom: 6px;
     }
-    .action-card-desc { font-size: 0.95rem; color: #555555; line-height: 1.5; }
+    .action-card-desc { font-size: 0.95rem; color: #4D4D4D; line-height: 1.5; }
 
-    /* ── Metric Row ── */
+    /* ── Metric Row — alternating accent colors per card position ── */
     .metric-row { display: flex; gap: 14px; margin: 14px 0; }
     .metric-card {
         flex: 1; background: white; border: 1px solid #DDDDDD;
-        border-left: 3px solid #B22020; border-radius: 4px; padding: 14px 18px;
+        border-radius: 4px; padding: 14px 18px;
     }
+    /* First metric card: orange */
+    .metric-card:nth-child(1) { border-left: 3px solid #FD5F07; }
+    /* Second metric card: teal */
+    .metric-card:nth-child(2) { border-left: 3px solid #00ADC6; }
+    /* Third metric card: yellow */
+    .metric-card:nth-child(3) { border-left: 3px solid #F5AE45; }
     .metric-card .metric-label {
         font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
-        text-transform: uppercase; color: #888888; margin-bottom: 4px;
+        text-transform: uppercase; color: #4D4D4D; margin-bottom: 4px;
     }
     .metric-card .metric-value {
-        font-size: 1.0rem; font-weight: 600; color: #1a1a1a;
+        font-size: 1.0rem; font-weight: 600; color: #231E28;
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
@@ -134,86 +142,93 @@ st.markdown("""
         padding: 3px 10px; border-radius: 3px; font-size: 0.80rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: 0.3px;
     }
-    .badge-green  { background: #E6F4EA; color: #1E7E34; border: 1px solid #C3E6CB; }
-    .badge-yellow { background: #FFF8E1; color: #856404; border: 1px solid #FFE69C; }
-    .badge-red    { background: #FDECEA; color: #B22020; border: 1px solid #F5C6CB; }
-    .badge-black  { background: #1a1a1a; color: #FFFFFF; border: 1px solid #1a1a1a; }
+    /* Success badge uses teal — brand secondary, not generic green */
+    .badge-green  { background: #E8F7F9; color: #0F6E7A; border: 1px solid #6BBFBC; }
+    /* Warning badge uses yellow secondary */
+    .badge-yellow { background: #FEF6E4; color: #7A5A0A; border: 1px solid #F5AE45; }
+    /* Error/missing badge uses orange tint */
+    .badge-red    { background: #FFF0E8; color: #C44A00; border: 1px solid #FFCBA8; }
+    /* Neutral/confirmed badge: Midnight */
+    .badge-black  { background: #231E28; color: #FFFFFF; border: 1px solid #231E28; }
 
     /* ── Alert Boxes ── */
     .alert { border-radius: 4px; padding: 14px 18px; margin: 10px 0; border-left: 4px solid; border: 1px solid; }
-    .alert-success { background: #F4FAF6; border-color: #28A745; border-left-color: #28A745; color: #155724; }
-    .alert-warning { background: #FFFBF0; border-color: #FFC107; border-left-color: #E6A817; color: #664D03; }
-    .alert-info    { background: #F8F8F8; border-color: #DDDDDD; border-left-color: #B22020; color: #1a1a1a; }
+    /* Success: teal — on-brand and distinctive */
+    .alert-success { background: #E8F7F9; border-color: #6BBFBC; border-left-color: #00ADC6; color: #0A4A52; }
+    /* Warning: yellow secondary */
+    .alert-warning { background: #FEF6E4; border-color: #EBC386; border-left-color: #F5AE45; color: #5C3D08; }
+    /* Info: subtle teal tint with orange left border */
+    .alert-info    { background: #F0FAFB; border-color: #8ACBD8; border-left-color: #FD5F07; color: #231E28; }
     .alert-title   { font-weight: 700; font-size: 1.0rem; margin-bottom: 6px; }
     .alert span, .alert div:not(.alert-title) { font-size: 0.95rem !important; }
 
-    /* ── Field Pills ── */
+    /* ── Field Pills — yellow secondary for missing fields ── */
     .field-pill {
         display: inline-flex; align-items: center; gap: 4px;
-        background: #FDECEA; border: 1px solid #F5C6CB; border-radius: 3px;
+        background: #FEF6E4; border: 1px solid #EBC386; border-radius: 3px;
         padding: 5px 12px; margin: 3px 3px 3px 0;
-        font-size: 0.90rem; font-weight: 600; color: #B22020;
+        font-size: 0.90rem; font-weight: 600; color: #7A5A0A;
     }
 
-    /* ── Email Prompt Card ── */
+    /* ── Email Prompt Card — teal top border for informational prompts ── */
     .email-prompt-card {
-        background: white; border: 1px solid #DDDDDD; border-top: 3px solid #B22020;
+        background: #F0FAFB; border: 1px solid #8ACBD8; border-top: 3px solid #00ADC6;
         border-radius: 4px; padding: 24px 28px; margin: 16px 0; text-align: center;
     }
     .email-prompt-card .ep-icon { font-size: 2.2rem; margin-bottom: 8px; }
     .email-prompt-card h3 {
         margin: 0 0 6px 0; font-size: 1.1rem; font-weight: 700;
-        color: #1a1a1a; text-transform: uppercase; letter-spacing: 0.3px;
+        color: #231E28; text-transform: uppercase; letter-spacing: 0.3px;
     }
-    .email-prompt-card p { margin: 0 0 16px 0; font-size: 0.95rem; color: #555555; }
+    .email-prompt-card p { margin: 0 0 16px 0; font-size: 0.95rem; color: #4D4D4D; }
 
-    /* ── Buttons — uniform size and placement ── */
+    /* ── Buttons — primary: Midnight → orange on hover ── */
     div.stButton > button {
         width: 100%; border-radius: 4px; font-weight: 700;
-        font-size: 0.92rem; padding: 11px 18px; transition: all 0.12s ease;
+        font-size: 0.92rem; padding: 11px 18px; transition: all 0.15s ease;
         text-transform: uppercase; letter-spacing: 0.5px;
     }
     div.stButton > button:hover { opacity: 0.88; }
     div.stButton > button[kind="primary"] {
-        background: #B22020 !important; border-color: #8B0000 !important; color: white !important;
+        background: #231E28 !important; border-color: #231E28 !important; color: white !important;
     }
-    div.stButton > button[kind="primary"]:hover { background: #8B0000 !important; }
+    div.stButton > button[kind="primary"]:hover { background: #FD5F07 !important; border-color: #FD5F07 !important; }
 
-    /* ── Section Heading ── */
+    /* ── Section Heading — teal underline rule ── */
     .section-heading {
-        font-size: 0.80rem; font-weight: 800; color: #B22020;
+        font-size: 0.80rem; font-weight: 800; color: #00ADC6;
         margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px;
         text-transform: uppercase; letter-spacing: 1.2px;
     }
-    .section-heading::after { content: ''; flex: 1; height: 1px; background: #DDDDDD; margin-left: 6px; }
+    .section-heading::after { content: ''; flex: 1; height: 1px; background: #8ACBD8; margin-left: 6px; }
 
     /* ── Misc ── */
-    .stDataFrame { border-radius: 4px; overflow: hidden; border: 1px solid #DDDDDD; }
+    .stDataFrame { border-radius: 4px; overflow: hidden; border: 1px solid #8ACBD8; }
     .stTextArea textarea {
         border-radius: 4px !important; font-size: 0.95rem !important;
-        line-height: 1.6 !important; border-color: #CCCCCC !important;
+        line-height: 1.6 !important; border-color: #8ACBD8 !important;
     }
-    .stSelectbox > div > div { border-radius: 4px !important; border-color: #CCCCCC !important; font-size: 0.95rem !important; }
-    .stTextInput > div > div > input { border-radius: 4px !important; border-color: #CCCCCC !important; }
+    .stSelectbox > div > div { border-radius: 4px !important; border-color: #8ACBD8 !important; font-size: 0.95rem !important; }
+    .stTextInput > div > div > input { border-radius: 4px !important; border-color: #8ACBD8 !important; }
 
-    /* ── Card (used in locked adjuster state) ── */
+    /* ── Card — yellow top accent for locked/pending states ── */
     .card {
-        background: white; border: 1px solid #DDDDDD; border-top: 3px solid #B22020;
+        background: white; border: 1px solid #EBC386; border-top: 3px solid #F5AE45;
         border-radius: 4px; padding: 20px 24px; margin-bottom: 14px;
     }
     .card-label {
         font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
-        text-transform: uppercase; color: #B22020; margin-bottom: 4px;
+        text-transform: uppercase; color: #BA7517; margin-bottom: 4px;
     }
-    .card-title { font-size: 1.05rem; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; }
+    .card-title { font-size: 1.05rem; font-weight: 600; color: #231E28; margin-bottom: 12px; }
 
-    /* ── Footer ── */
+    /* ── Footer — teal accent stripe ── */
     .footer-bar {
-        background: #1a1a1a; border-radius: 0; padding: 12px 24px;
+        background: #231E28; border-radius: 0; padding: 12px 24px;
         display: flex; justify-content: space-between; align-items: center;
-        margin-top: 24px; font-size: 0.80rem; border-top: 3px solid #B22020;
+        margin-top: 24px; font-size: 0.80rem; border-top: 3px solid #00ADC6;
     }
-    .footer-bar span { color: #AAAAAA; }
+    .footer-bar span { color: #6BBFBC; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -346,7 +361,7 @@ with tab2:
         else:
             badge_cls, badge_dot = "badge-black", "●"
 
-        claim_id = result.get("inow_claim_id") or "—"
+        claim_id = result.get("claim_id") or "—"
         ts = datetime.now().strftime("%d %b %Y, %H:%M")
         st.markdown(f"""
         <div class="metric-row">
@@ -472,13 +487,13 @@ with tab2:
                                     <div style="
                                         background: #FFFFFF;
                                         border: 1px solid #DDDDDD;
-                                        border-left: 4px solid #B22020;
+                                        border-left: 4px solid #00ADC6;
                                         border-radius: 4px;
                                         padding: 20px 24px;
                                         margin-top: 10px;
                                         font-size: 0.95rem;
                                         line-height: 1.7;
-                                        color: #1a1a1a;
+                                        color: #231E28;
                                         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
                                     ">
                                         {formatted}
@@ -522,7 +537,7 @@ with tab2:
                                     st.error(f"Error: {str(e)}")
                                     st.exception(e)
                 else:
-                    cid = st.session_state.workflow_result.get("inow_claim_id", "—")
+                    cid = st.session_state.workflow_result.get("claim_id", "—")
                     st.markdown(f"""
                     <div class="alert alert-success">
                         <div class="alert-title">✅ Claim Registered Successfully</div>
@@ -607,7 +622,7 @@ with tab3:
 
                 st.markdown(f"""
                 <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0 6px 0;">
-                    <span style="font-weight:700;font-size:1.0rem;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">📧 Email Draft</span>
+                    <span style="font-weight:700;font-size:1.0rem;color:#00ADC6;text-transform:uppercase;letter-spacing:0.5px;">📧 Email Draft</span>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -732,7 +747,7 @@ with tab4:
                     <div class="alert-title">✅ Adjuster Assigned &amp; Confirmed</div>
                     <div style="font-size:1.1rem;font-weight:700;margin:8px 0 4px 0;">
                         {assigned['name']}
-                        <span class="badge badge-green" style="margin-left:10px;">Confirmed</span>
+                        <span class="badge badge-green" style="margin-left:10px;background:#E8F7F9;color:#0F6E7A;border-color:#6BBFBC;">Confirmed</span>
                     </div>
                     <div>Assigned by: Human-in-the-Loop &nbsp;·&nbsp; At: {assigned.get('assigned_at', '—')}</div>
                 </div>
@@ -755,7 +770,7 @@ with tab4:
                             <span class="badge badge-green" style="margin-left:10px;">Score: {score}</span>
                         </div>
                         <div style="font-weight:700;font-size:0.85rem;text-transform:uppercase;
-                                    letter-spacing:0.5px;margin-bottom:6px;">Reasoning:</div>
+                                    letter-spacing:0.5px;margin-bottom:6px;color:#00ADC6;">Reasoning:</div>
                         <ul style="margin:0;padding-left:18px;">{reasons_html}</ul>
                     </div>
                     """, unsafe_allow_html=True)

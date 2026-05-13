@@ -4,7 +4,7 @@ import json
 
 from tools.aws_tools import REQUIRED_FIELDS
 
-session = boto3.Session(profile_name="suraj")
+session = boto3.Session(profile_name="default")
 bedrock = session.client(
     "bedrock-runtime", region_name="us-east-1",verify=False)
 

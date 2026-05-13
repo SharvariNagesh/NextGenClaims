@@ -5,7 +5,7 @@ from agents.extraction_agent import extraction_agent
 from agents.validation_agent import validation_agent
 from agents.hitl_agent import hitl_agent
 from agents.policy_agent import policy_agent
-from agents.inow_agent import inow_agent
+from agents.claimgeneration_agent import claimgeneration_agent
 from agents.adjuster_agent import adjuster_agent
 
 
@@ -19,7 +19,7 @@ class ClaimState(TypedDict):
     draft_email: Optional[str]
     policy_doc: Optional[dict]
     relevant_policy_sections: Optional[str]
-    inow_claim_id: Optional[str]
+    claim_id: Optional[str]
     adjuster_evaluation: Optional[list]
     recommended_adjuster: Optional[dict]
     assigned_adjuster: Optional[dict]
@@ -68,13 +68,13 @@ def build_phase2_graph():
     return graph.compile()
 
 
-# ── Phase 3: Register claim in INOW ─────────────────────────────────────────
+# ── Phase 3: Register claim ─────────────────────────────────────────
 def build_phase3_graph():
-    """Register the claim in INOW and return a claim ID."""
+    """Register the claim and return a claim ID."""
     graph = StateGraph(ClaimState)
-    graph.add_node("inow_agent", inow_agent)
-    graph.set_entry_point("inow_agent")
-    graph.add_edge("inow_agent", END)
+    graph.add_node("claimgeneration_agent", claimgeneration_agent)
+    graph.set_entry_point("claimgeneration_agent")
+    graph.add_edge("claimgeneration_agent", END)
     return graph.compile()
 
 
@@ -102,7 +102,7 @@ def run_claim_workflow_phase1(bucket: str, key: str, region: str = "us-east-1") 
         draft_email=None,
         policy_doc=None,
         relevant_policy_sections=None,
-        inow_claim_id=None,
+        claim_id=None,
         adjuster_evaluation=None,
         recommended_adjuster=None,
         assigned_adjuster=None,
@@ -118,7 +118,7 @@ def run_claim_workflow_phase2(state: dict) -> dict:
 
 
 def run_claim_workflow_phase3(state: dict) -> dict:
-    """Phase 3: Register claim in INOW and return claim ID."""
+    """Phase 3: Register claim and return claim ID."""
     app = build_phase3_graph()
     return dict(app.invoke(state))
 

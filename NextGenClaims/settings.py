@@ -6,7 +6,7 @@ load_dotenv()
 
 # AWS
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
-S3_BUCKET = os.getenv("S3_BUCKET", "kendra-it-helpdesk-docs-development")
+S3_BUCKET = os.getenv("S3_BUCKET", "nextgenclaims-semicolons-2026")
 
 # Bedrock
 BEDROCK_MODEL_ID = "anthropic.claude-3-5-sonnet-20241022-v2:0"

@@ -7,7 +7,7 @@ from typing import List
 load_dotenv()
 
 s3_session = boto3.Session(profile_name=os.getenv("AWS_PROFILE_S3", "default"))
-bedrock_session = boto3.Session(profile_name=os.getenv("AWS_PROFILE_BEDROCK", "suraj"))
+bedrock_session = boto3.Session(profile_name=os.getenv("AWS_PROFILE_BEDROCK", "default"))
 
 REQUIRED_FIELDS = [
     "Policy Number",

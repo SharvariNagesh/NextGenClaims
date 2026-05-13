@@ -27,7 +27,7 @@ VM Agentic AI Hackathon/
 │   ├── validation_agent.py         # Phase 1 — Field extraction via LLM
 │   ├── hitl_agent.py               # Phase 1 — Missing fields email draft via LLM
 │   ├── policy_agent.py             # Phase 2 — Policy section analysis via LLM
-│   ├── inow_agent.py               # Phase 3 — Claim registration (NO LLM)
+│   ├── claimgeneration_agent.py               # Phase 3 — Claim registration (NO LLM)
 │   └── adjuster_agent.py           # Phase 4 — Adjuster scoring via LLM
 ├── tools/
 │   └── aws_tools.py                # S3 helpers, required fields config
@@ -48,7 +48,7 @@ extraction_agent        NO          —                           PyMuPDF handle
 validation_agent        YES         openai.gpt-oss-120b-1:0    Extracts structured fields from unstructured PDF text
 hitl_agent              YES         openai.gpt-oss-120b-1:0    Drafts professional email requesting missing fields
 policy_agent            YES         openai.gpt-oss-120b-1:0    Identifies policy sections relevant to the claim
-inow_agent              NO          —                           Deterministic mock claim ID generation (MD5 hash)
+claimgeneration_agent              NO          —                           Deterministic mock claim ID generation (MD5 hash)
 adjuster_agent          YES         openai.gpt-oss-120b-1:0    Scores & ranks adjusters by region, expertise, complexity
 
 
@@ -121,7 +121,7 @@ Complete 4-Phase Architecture Flow
 ║  └─────────────────────────────────────────────────────────────┘   ║
 ╚══════════════════════════════════════════════════════════════════════╝
                                │
-                    User clicks "Register Claim in INOW"
+                    User clicks "Register Claim"
                                │
                                ▼
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -129,10 +129,10 @@ Complete 4-Phase Architecture Flow
 ╠══════════════════════════════════════════════════════════════════════╣
 ║                                                                      ║
 ║  ┌─────────────────────────────────────────────────────────────┐   ║
-║  │ inow_agent  [NO LLM]                                        │   ║
+║  │ claimgeneration_agent  [NO LLM]                                        │   ║
 ║  │ • Generates deterministic claim ID (MD5 hash of fields)     │   ║
-║  │ • Simulates INOW system registration                        │   ║
-║  │ • Output: inow_claim_id, status = CLAIM_CREATED             │   ║
+║  │ • Simulates claim system registration                        │   ║
+║  │ • Output: claim_id, status = CLAIM_CREATED             │   ║
 ║  └─────────────────────────────────────────────────────────────┘   ║
 ╚══════════════════════════════════════════════════════════════════════╝
                                │

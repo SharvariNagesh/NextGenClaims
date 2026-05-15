@@ -1,8 +1,9 @@
 from datetime import datetime
 import json
 import boto3
+from config.settings import S3_BUCKET, AWS_REGION, BEDROCK_RUNTIME, POLICY_PDF, BEDROCK_MODEL_ID
 
-bedrock = boto3.client("bedrock-runtime", region_name="us-east-1", verify=False)
+bedrock = boto3.client(BEDROCK_RUNTIME, region_name=AWS_REGION, verify=False)
 
 
 def score_adjusters_with_llm(adjusters: list, extracted_fields: dict) -> list:
@@ -30,7 +31,7 @@ Return only the JSON array, nothing else.
 """
 
     response = bedrock.converse(
-        modelId="openai.gpt-oss-120b-1:0",
+        modelId=BEDROCK_MODEL_ID,
         messages=[{"role": "user", "content": [{"text": prompt}]}],
         inferenceConfig={"maxTokens": 1000, "temperature": 0.3}
     )

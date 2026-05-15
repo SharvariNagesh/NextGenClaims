@@ -1,26 +1,28 @@
 # agents/extraction_agent.py
 import fitz
 import boto3
+from config.settings import S3_BUCKET, AWS_REGION
+
 
 def extraction_agent(state: dict) -> dict:
     """Extract text from PDF in S3."""
 
-    s3 = boto3.client("s3", region_name=state.get("region", "us-east-1"), verify = False)
-# Download PDF from S3
-    obj = s3.get_object(Bucket=state["bucket"], Key=state["key"])
+    s3 = boto3.client("s3", region_name=AWS_REGION, verify=False)
+    # Download PDF from S3
+    obj = s3.get_object(Bucket=S3_BUCKET, Key=state["key"])
     pdf_bytes = obj["Body"].read()
-    
+
     # Extract using PyMuPDF
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
     raw_text = ""
-    
+
     for page in doc:
         raw_text += page.get_text("text")
-    
+
     doc.close()
-    
+
     print(f"✅ Extraction complete: {len(raw_text)} characters extracted")
-    
+
     return {
         **state,
         "raw_text": raw_text,

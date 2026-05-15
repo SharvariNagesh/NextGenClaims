@@ -2,7 +2,6 @@
 import streamlit as st
 import boto3
 import json
-import os
 import streamlit.components.v1 as components
 from datetime import datetime
 from orchestrator.graph import (
@@ -13,7 +12,7 @@ from orchestrator.graph import (
 )
 from tools.aws_tools import get_s3_pdf_list
 from agents.hitl_agent import draft_missing_fields_email
-
+from config.settings import S3_BUCKET, AWS_REGION
 # ===== PAGE CONFIG =====
 st.set_page_config(
     page_title="Claims Processing Center",
@@ -23,8 +22,6 @@ st.set_page_config(
 )
 
 # ===== HARDCODED CONFIG (sidebar removed) =====
-s3_bucket = os.getenv("S3_BUCKET", "kendra-it-helpdesk-docs-development")
-aws_region = "us-east-1"
 with open("config/required_fields.json", "r") as f:
     required_fields = json.load(f)
 st.markdown("""
@@ -281,7 +278,7 @@ with tab1:
     st.markdown('<span class="step-desc">Choose the claim PDF from the S3 bucket to begin processing.</span>', unsafe_allow_html=True)
 
     try:
-        pdf_list = get_s3_pdf_list(s3_bucket, region=aws_region)
+        pdf_list = get_s3_pdf_list(S3_BUCKET, region=AWS_REGION)
         if not pdf_list:
             st.warning("No PDF files found in the S3 bucket.")
         else:
@@ -322,7 +319,7 @@ with tab1:
             with st.spinner("Extracting and validating claim fields…"):
                 try:
                     result = run_claim_workflow_phase1(
-                        bucket=s3_bucket, key=st.session_state.selected_claim, region=aws_region
+                        bucket=S3_BUCKET, key=st.session_state.selected_claim, region=AWS_REGION
                     )
                     st.session_state.workflow_result = result
                     st.session_state.email_approved = False
@@ -391,8 +388,8 @@ with tab2:
 
         # ── Missing fields path ──
         if missing:
-                    pills = "".join(f'<span class="field-pill">✕ {f}</span>' for f in missing)
-                    st.markdown(f"""
+            pills = "".join(f'<span class="field-pill">✕ {f}</span>' for f in missing)
+            st.markdown(f"""
                     <div class="alert alert-warning" style="margin-top:12px;">
                         <div class="alert-title">⚠ Missing Fields Detected</div>
                         <div style="margin-bottom:8px;">The following required fields were not found in the document:</div>
@@ -400,10 +397,10 @@ with tab2:
                     </div>
                     """, unsafe_allow_html=True)
 
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        if st.button("✉️ Go to Draft Email →", type="primary", key="goto_email_btn"):
-                            components.html("""
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("✉️ Go to Draft Email →", type="primary", key="goto_email_btn"):
+                    components.html("""
                             <script>
                                 window.parent.document.querySelectorAll('[data-baseweb="tab"]')[2].click();
                             </script>
@@ -453,37 +450,37 @@ with tab2:
                         st.rerun()
             else:
                 if result.get("relevant_policy_sections"):
-                                    st.markdown('<div class="section-heading">Relevant Policy Sections</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="section-heading">Relevant Policy Sections</div>', unsafe_allow_html=True)
 
-                                    import re
-                                    raw = result["relevant_policy_sections"]
+                    import re
+                    raw = result["relevant_policy_sections"]
 
-                                    # Convert markdown bold (**text**) to <strong>
-                                    raw = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', raw)
-                                    # Convert markdown italic (*text* or _text_) to <em>
-                                    raw = re.sub(r'\*(.*?)\*', r'\1', raw)
-                                    # Convert leading bullet dashes to proper list items
-                                    lines = raw.split('\n')
-                                    html_lines = []
-                                    in_list = False
-                                    for line in lines:
-                                        stripped = line.strip()
-                                        if stripped.startswith('- '):
-                                            if not in_list:
-                                                html_lines.append('<ul style="margin:10px 0 10px 18px;padding:0;">')
-                                                in_list = True
-                                            html_lines.append(f'<li style="margin-bottom:8px;">{stripped[2:]}</li>')
-                                        else:
-                                            if in_list:
-                                                html_lines.append('</ul>')
-                                                in_list = False
-                                            if stripped:
-                                                html_lines.append(f'<p style="margin:0 0 10px 0;">{stripped}</p>')
-                                    if in_list:
-                                        html_lines.append('</ul>')
-                                    formatted = ''.join(html_lines)
+                    # Convert markdown bold (**text**) to <strong>
+                    raw = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', raw)
+                    # Convert markdown italic (*text* or _text_) to <em>
+                    raw = re.sub(r'\*(.*?)\*', r'\1', raw)
+                    # Convert leading bullet dashes to proper list items
+                    lines = raw.split('\n')
+                    html_lines = []
+                    in_list = False
+                    for line in lines:
+                        stripped = line.strip()
+                        if stripped.startswith('- '):
+                            if not in_list:
+                                html_lines.append('<ul style="margin:10px 0 10px 18px;padding:0;">')
+                                in_list = True
+                            html_lines.append(f'<li style="margin-bottom:8px;">{stripped[2:]}</li>')
+                        else:
+                            if in_list:
+                                html_lines.append('</ul>')
+                                in_list = False
+                            if stripped:
+                                html_lines.append(f'<p style="margin:0 0 10px 0;">{stripped}</p>')
+                    if in_list:
+                        html_lines.append('</ul>')
+                    formatted = ''.join(html_lines)
 
-                                    st.markdown(f"""
+                    st.markdown(f"""
                                     <div style="
                                         background: #FFFFFF;
                                         border: 1px solid #DDDDDD;
@@ -635,11 +632,11 @@ with tab3:
                 col1, col2 = st.columns(2)
                 with col1:
                     if st.button("✅ Approve ", type="primary", key="approve_btn"):
-                        s3 = boto3.client("s3", region_name=aws_region, verify=False)
+                        s3 = boto3.client("s3", region_name=AWS_REGION, verify=False)
                         claim_name = st.session_state.selected_claim.split("/")[-1].replace(".pdf", "")
                         draft_key = f"drafts/{claim_name}_email_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
                         try:
-                            s3.put_object(Bucket=s3_bucket, Key=draft_key,
+                            s3.put_object(Bucket=S3_BUCKET, Key=draft_key,
                                           Body=edited_email.encode("utf-8"), ContentType="text/plain")
                             st.session_state.email_approved = True
                             st.session_state.workflow_result["status"] = "EMAIL_APPROVED"

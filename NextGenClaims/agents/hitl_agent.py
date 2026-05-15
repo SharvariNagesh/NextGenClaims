@@ -1,7 +1,8 @@
 # agents/hitl_agent.py
 import boto3
+from config.settings import S3_BUCKET, AWS_REGION, BEDROCK_RUNTIME, POLICY_PDF, BEDROCK_MODEL_ID
 
-bedrock = boto3.client("bedrock-runtime", region_name="us-east-1", verify=False)
+bedrock = boto3.client(BEDROCK_RUNTIME, region_name=AWS_REGION, verify=False)
 
 def draft_missing_fields_email(missing_fields: list, claimant_email: str = "") -> str:
     """Use LLM to draft a polite email requesting missing info."""
@@ -16,7 +17,7 @@ Write only the email body. Keep it under 250 words. No subject line needed.
 """
 
     response = bedrock.converse(
-        modelId="openai.gpt-oss-120b-1:0",
+        modelId=BEDROCK_MODEL_ID,
         messages=[
             {
                 "role": "user",

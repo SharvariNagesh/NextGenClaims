@@ -1,23 +1,22 @@
 # agents/policy_agent.py
 import boto3
-import json
 import fitz
 import re
+from config.settings import S3_BUCKET, AWS_REGION, BEDROCK_RUNTIME, POLICY_PDF, BEDROCK_MODEL_ID
 
-bedrock = boto3.client("bedrock-runtime", region_name="us-east-1",verify=False)
+bedrock = boto3.client(BEDROCK_RUNTIME, region_name=AWS_REGION, verify=False)
+
 
 def fetch_policy_document(state: dict) -> str:
     """Extract text from PDF in S3."""
 
-    s3 = boto3.client("s3", region_name="us-east-1",verify=False)
+    s3 = boto3.client("s3", region_name=AWS_REGION, verify=False)
 
-    policy_pdf = "Policy/HP00000282-policy_document.pdf"
-    print(f"🔍 Attempting to fetch S3 key: {policy_pdf}")  # add this
-
+    print(f"🔍 Attempting to fetch S3 key: {POLICY_PDF}")  # add this
 
     response = s3.get_object(
-        Bucket="extgenclaims-semicolons-2026",
-        Key=policy_pdf
+        Bucket=S3_BUCKET,
+        Key=POLICY_PDF
     )
 
     pdf_bytes = response["Body"].read()
@@ -49,12 +48,9 @@ Policy Document:
 
 Return only relevant sections. Be concise. Under 300 words.
 """
-    
-
-    model_id = "openai.gpt-oss-120b-1:0"
 
     response = bedrock.converse(
-        modelId=model_id,
+        modelId=BEDROCK_MODEL_ID,
         messages=[
             {
                 "role": "user",
@@ -78,10 +74,9 @@ Return only relevant sections. Be concise. Under 300 words.
         if "reasoningContent" in item:
             reasoning_text = item["reasoningContent"]["reasoningText"]["text"]
 
-
     print("Reasoning text :", reasoning_text)
 
-    print("extracted_text: ",extracted_text)
+    print("extracted_text: ", extracted_text)
     print("✅ policy Section extracted")
     return extracted_text
 
@@ -99,10 +94,8 @@ def clean_pdf_text(text: str) -> str:
     # Fix extra spaces
     text = re.sub(r'[ \t]{2,}', ' ', text)
 
-
     text = re.sub(r'Page \d+ of \d+', '', text, flags=re.IGNORECASE)
     text = re.sub(r'\n\d+\n', '\n', text)
-
 
     return text.strip()
 
@@ -132,23 +125,23 @@ def policy_agent(state: dict) -> dict:
 
     policy_number = state["extracted_fields"].get("policy_number", "UNKNOWN")
 
-    incident_desc= state["extracted_fields"]["Cause of Loss"]
+    incident_desc = state["extracted_fields"]["Cause of Loss"]
 
     # Fetch policy
     policy_doc = fetch_policy_document(policy_number)
-    
+
     # Extract relevant sections
     relevant_sections = extract_relevant_policy_sections(
         policy_doc,
         incident_desc,
-        region= "us-east-1"
+        region="us-east-1"
     )
 
     relevant_sections = clean_pdf_text(relevant_sections)
     relevant_sections = reconstruct_paragraphs(relevant_sections)
     print("After cleaning the pdf:", relevant_sections)
     print(f"✅ Policy Agent: Policy fetched and analyzed")
-    
+
     return {
         **state,
         "policy_doc": policy_doc,
